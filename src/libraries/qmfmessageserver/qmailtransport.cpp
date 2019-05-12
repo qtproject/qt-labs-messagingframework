@@ -146,8 +146,8 @@ QMailTransport::QMailTransport(const char* name)
 #ifndef QT_NO_SSL
     encryption = Encrypt_NONE;
 #endif
-    mSocket = 0;
-    mStream = 0;
+    mSocket = Q_NULLPTR;
+    mStream = Q_NULLPTR;
     connect( &connectToHostTimeOut, SIGNAL(timeout()), this, SLOT(hostConnectionTimeOut()) );
 }
 
@@ -219,7 +219,7 @@ void QMailTransport::createSocket(EncryptType encryptType)
 
     const int bufferLimit = 101*1024; // Limit memory used when downloading
     mSocket->setReadBufferSize( bufferLimit );
-    mSocket->setObjectName(QString(mName) + QLatin1String("-socket"));
+    mSocket->setObjectName(QString::fromUtf8(mName) + QStringLiteral("-socket"));
     connect(mSocket, SIGNAL(connected()), this, SLOT(connectionEstablished()));
     connect(mSocket, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(socketError(QAbstractSocket::SocketError)));
     connect(mSocket, SIGNAL(readyRead()), this, SIGNAL(readyRead()));

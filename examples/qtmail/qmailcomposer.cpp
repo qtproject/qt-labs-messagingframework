@@ -319,6 +319,7 @@ QString QMailComposerFactory::defaultKey( QMailMessage::MessageType type )
 */
 QList<QMailMessage::MessageType> QMailComposerFactory::messageTypes( const QString& key )
 {
+    Q_UNUSED(key);
     return composerInterface()->messageTypes();
 }
 
@@ -329,6 +330,7 @@ QList<QMailMessage::MessageType> QMailComposerFactory::messageTypes( const QStri
 */
 QString QMailComposerFactory::name(const QString &key, QMailMessage::MessageType type)
 {
+    Q_UNUSED(key);
     return composerInterface()->name(type);
 }
 
@@ -339,6 +341,7 @@ QString QMailComposerFactory::name(const QString &key, QMailMessage::MessageType
 */
 QString QMailComposerFactory::displayName(const QString &key, QMailMessage::MessageType type)
 {
+    Q_UNUSED(key);
     return composerInterface()->displayName(type);
 }
 
@@ -349,6 +352,7 @@ QString QMailComposerFactory::displayName(const QString &key, QMailMessage::Mess
 */
 QIcon QMailComposerFactory::displayIcon(const QString &key, QMailMessage::MessageType type)
 {
+    Q_UNUSED(key);
     return composerInterface()->displayIcon(type);
 }
 
@@ -358,7 +362,7 @@ QIcon QMailComposerFactory::displayIcon(const QString &key, QMailMessage::Messag
 */
 QMailComposerInterface *QMailComposerFactory::create( const QString& key, QWidget *parent )
 {
-    Q_UNUSED(parent);
+    Q_UNUSED(key);
     return new EmailComposerInterface(parent);
 }
 

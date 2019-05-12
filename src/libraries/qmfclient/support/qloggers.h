@@ -58,7 +58,7 @@ public:
         void setMinLogLvl(const LogLevel _minlvl);
 
         /// Returns the minimal log level set for the logger
-        LogLevel getMinLogLvl() const { return min_lvl; };
+        LogLevel getMinLogLvl() const { return min_lvl; }
 
         /*!
           \brief Is this logger ready for logging?
@@ -75,10 +75,10 @@ public:
 
           \return true if logger is ready for logging, otherwise returns false.
         */
-        bool isReady() const { return is_ready; };
+        bool isReady() const { return is_ready; }
 
         /// Empty destructor
-        virtual ~BaseLoggerFoundation()  { };
+        virtual ~BaseLoggerFoundation()  { }
 
 protected:
         /*!
@@ -289,7 +289,7 @@ inline FileLogger<Prefix>::FileLogger(const QString& _name, const unsigned _flus
     if(f == NULL)
     {
         should_close = false;
-        BaseLogger< FileLogger<Prefix>, Prefix >::setUnReady(strerror(errno));
+        BaseLogger< FileLogger<Prefix>, Prefix >::setUnReady(QString::fromUtf8(strerror(errno)));
     }
 }
 

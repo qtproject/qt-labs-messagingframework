@@ -130,7 +130,7 @@ QMF_EXPORT void qMailLoggersRecreate(const QString& organization, const QString&
     loggers.clear();
 
     if(syslogEnabled) {
-        SysLogger<LvlLogPrefix>* sl = new SysLogger<LvlLogPrefix>(ident, LOG_PID, LOG_LOCAL7);
+        SysLogger<LvlLogPrefix>* sl = new SysLogger<LvlLogPrefix>(QString::fromUtf8(ident), LOG_PID, LOG_LOCAL7);
         addLoggerIfReady(sl);
     };
 

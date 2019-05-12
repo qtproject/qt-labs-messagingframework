@@ -1581,7 +1581,7 @@ void QMailStorageActionPrivate::updateMessages(const QMailMessageList &list)
         if (message.contentScheme().isEmpty()) {
             message.setContentScheme(QMailContentManagerFactory::defaultScheme());
         }
-        message.setCustomField("qmf-obsolete-contentid", message.contentIdentifier());
+        message.setCustomField(QStringLiteral("qmf-obsolete-contentid"), message.contentIdentifier());
         if (QMailContentManager *contentManager = QMailContentManagerFactory::create(message.contentScheme())) {
             QMailStore::ErrorCode code = contentManager->update(&message, QMailContentManager::EnsureDurability);
             if (code != QMailStore::NoError) {

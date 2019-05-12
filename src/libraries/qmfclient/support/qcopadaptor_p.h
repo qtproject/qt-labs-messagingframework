@@ -68,7 +68,7 @@ public:
 
     inline QCopAdaptorEnvelope& operator<<(const char *value)
     {
-        addArgument(QVariant(QString(value)));
+        addArgument(QVariant(QString::fromUtf8(value)));
         return *this;
     }
 

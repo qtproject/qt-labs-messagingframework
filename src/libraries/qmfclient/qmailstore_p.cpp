@@ -126,24 +126,24 @@ class QMailStorePrivate::Key
     const QString &key(QString*) const { return *m_alias; }
 
 public:
-    explicit Key(const QMailAccountKey &key, const QString &alias = QString()) : m_type(Account), m_key(&key), m_alias(&alias), m_field(0) {}
+    explicit Key(const QMailAccountKey &key, const QString &alias = QString()) : m_type(Account), m_key(&key), m_alias(&alias), m_field(Q_NULLPTR) {}
     Key(const QString &field, const QMailAccountKey &key, const QString &alias = QString()) : m_type(Account), m_key(&key), m_alias(&alias), m_field(&field) {}
-    explicit Key(const QMailAccountSortKey &key, const QString &alias = QString()) : m_type(AccountSort), m_key(&key), m_alias(&alias), m_field(0) {}
+    explicit Key(const QMailAccountSortKey &key, const QString &alias = QString()) : m_type(AccountSort), m_key(&key), m_alias(&alias), m_field(Q_NULLPTR) {}
 
-    explicit Key(const QMailFolderKey &key, const QString &alias = QString()) : m_type(Folder), m_key(&key), m_alias(&alias), m_field(0) {}
+    explicit Key(const QMailFolderKey &key, const QString &alias = QString()) : m_type(Folder), m_key(&key), m_alias(&alias), m_field(Q_NULLPTR) {}
     Key(const QString &field, const QMailFolderKey &key, const QString &alias = QString()) : m_type(Folder), m_key(&key), m_alias(&alias), m_field(&field) {}
-    explicit Key(const QMailFolderSortKey &key, const QString &alias = QString()) : m_type(FolderSort), m_key(&key), m_alias(&alias), m_field(0) {}
+    explicit Key(const QMailFolderSortKey &key, const QString &alias = QString()) : m_type(FolderSort), m_key(&key), m_alias(&alias), m_field(Q_NULLPTR) {}
 
-    explicit Key(const QMailThreadKey &key, const QString &alias = QString()) : m_type(Thread), m_key(&key), m_alias(&alias), m_field(0) {}
+    explicit Key(const QMailThreadKey &key, const QString &alias = QString()) : m_type(Thread), m_key(&key), m_alias(&alias), m_field(Q_NULLPTR) {}
     Key(const QString &field, const QMailThreadKey &key, const QString &alias = QString()) : m_type(Thread), m_key(&key), m_alias(&alias), m_field(&field) {}
-    explicit Key(const QMailThreadSortKey &key, const QString &alias = QString()) : m_type(ThreadSort), m_key(&key), m_alias(&alias), m_field(0) {}
+    explicit Key(const QMailThreadSortKey &key, const QString &alias = QString()) : m_type(ThreadSort), m_key(&key), m_alias(&alias), m_field(Q_NULLPTR) {}
 
 
-    explicit Key(const QMailMessageKey &key, const QString &alias = QString()) : m_type(Message), m_key(&key), m_alias(&alias), m_field(0) {}
+    explicit Key(const QMailMessageKey &key, const QString &alias = QString()) : m_type(Message), m_key(&key), m_alias(&alias), m_field(Q_NULLPTR) {}
     Key(const QString &field, const QMailMessageKey &key, const QString &alias = QString()) : m_type(Message), m_key(&key), m_alias(&alias), m_field(&field) {}
-    explicit Key(const QMailMessageSortKey &key, const QString &alias = QString()) : m_type(MessageSort), m_key(&key), m_alias(&alias), m_field(0) {}
+    explicit Key(const QMailMessageSortKey &key, const QString &alias = QString()) : m_type(MessageSort), m_key(&key), m_alias(&alias), m_field(Q_NULLPTR) {}
 
-    explicit Key(const QString &text) : m_type(Text), m_key(0), m_alias(&text), m_field(0) {}
+    explicit Key(const QString &text) : m_type(Text), m_key(Q_NULLPTR), m_alias(&text), m_field(Q_NULLPTR) {}
 
     template<typename KeyType>
     bool isType() const { return isType(reinterpret_cast<KeyType*>(0)); }
@@ -245,7 +245,7 @@ QString contentUri(const QString &scheme, const QString &identifier)
         return QString();
 
     // Formulate a URI from the content scheme and identifier
-    return escape(scheme, ':') + ':' + escape(identifier, ':');
+    return escape(scheme, ':') % QStringLiteral(":") % escape(identifier, ':');
 }
 
 QString contentUri(const QMailMessageMetaData &message)
@@ -832,7 +832,7 @@ protected:
         if (!s.isEmpty()) {
             // Delimit data for sql "LIKE" operator
             if (((arg.op == Includes) || (arg.op == Excludes)) || (((arg.op == Equal) || (arg.op == NotEqual)) && valueMinimalised))
-                return QString('%' + s + '%');
+                return QStringLiteral("%") % s % QStringLiteral("%");
         } else if ((arg.op == Includes) || (arg.op == Excludes)) {
             return QString('%');
         }
@@ -2373,7 +2373,7 @@ bool QMailStorePrivate::Transaction::committed() const
 
 struct QMailStorePrivate::ReadLock
 {
-    ReadLock(QMailStorePrivate *){};
+    ReadLock(QMailStorePrivate *){}
 };
 
 
@@ -2506,12 +2506,12 @@ QSqlDatabase *QMailStorePrivate::database() const
     return databaseptr;
 }
 
-ProcessMutex* QMailStorePrivate::contentMutex = 0;
+ProcessMutex* QMailStorePrivate::contentMutex = Q_NULLPTR;
 
 QMailStorePrivate::QMailStorePrivate(QMailStore* parent)
     : QMailStoreImplementation(parent),
       q_ptr(parent),
-      databaseptr(0),
+      databaseptr(Q_NULLPTR),
       messageCache(messageCacheSize),
       uidCache(uidCacheSize),
       folderCache(folderCacheSize),
@@ -2519,7 +2519,7 @@ QMailStorePrivate::QMailStorePrivate(QMailStore* parent)
       threadCache(threadCacheSize),
       inTransaction(false),
       lastQueryError(0),
-      mutex(0),
+      mutex(Q_NULLPTR),
       globalLocks(0)
 {
     ProcessMutex creationMutex(QDir::rootPath());
@@ -2527,7 +2527,7 @@ QMailStorePrivate::QMailStorePrivate(QMailStore* parent)
     guard.lock();
 
     mutex = new ProcessMutex(databaseIdentifier(), 1);
-    if (contentMutex == 0) {
+    if (contentMutex == Q_NULLPTR) {
         contentMutex = new ProcessMutex(databaseIdentifier(), 3);
     }
     connect(&databaseUnloadTimer, SIGNAL(timeout()), this, SLOT(unloadDatabase()));
@@ -3353,7 +3353,7 @@ QMailMessageMetaData QMailStorePrivate::extractMessageMetaData(const QSqlRecord&
     QMailMessageMetaData metaData;
 
     // Load the meta data items (note 'SELECT *' does not give the same result as 'SELECT expand(allMessageProperties())')
-    extractMessageMetaData(r, QMailMessageKey::Properties(0), properties, &metaData);
+    extractMessageMetaData(r, QMailMessageKey::Properties(Q_NULLPTR), properties, &metaData);
 
     metaData.setCustomFields(customFields);
     metaData.setCustomFieldsModified(false);
@@ -3366,7 +3366,7 @@ QMailMessage QMailStorePrivate::extractMessage(const QSqlRecord& r, const QMap<Q
     QMailMessage newMessage;
 
     // Load the meta data items (note 'SELECT *' does not give the same result as 'SELECT expand(allMessageProperties())')
-    extractMessageMetaData(r, QMailMessageKey::Properties(0), properties, &newMessage);
+    extractMessageMetaData(r, QMailMessageKey::Properties(Q_NULLPTR), properties, &newMessage);
 
     newMessage.setCustomFields(customFields);
     newMessage.setCustomFieldsModified(false);
@@ -3393,7 +3393,7 @@ QMailMessage QMailStorePrivate::extractMessage(const QSqlRecord& r, const QMap<Q
         }
 
         // Re-load the meta data items so that they take precedence over the loaded content
-        extractMessageMetaData(r, QMailMessageKey::Properties(0), properties, &newMessage);
+        extractMessageMetaData(r, QMailMessageKey::Properties(Q_NULLPTR), properties, &newMessage);
 
         newMessage.setCustomFields(customFields);
         newMessage.setCustomFieldsModified(false);
@@ -4261,7 +4261,7 @@ bool QMailStorePrivate::createTable(const QString &name)
     bool result = true;
 
     // load schema.
-    QFile data(QString::fromLatin1(":/QmfSql/") + database()->driverName() + '/' + name);
+    QFile data(QStringLiteral(":/QmfSql/") % database()->driverName() % QStringLiteral("/") % name);
     if (!data.open(QIODevice::ReadOnly)) {
         qWarning() << "Failed to load table schema resource:" << name;
         result = false;
@@ -4888,7 +4888,7 @@ void QMailStorePrivate::unloadDatabase()
         shrinkMemory();
         databaseptr->close();
         delete databaseptr;
-        databaseptr = 0;
+        databaseptr = Q_NULLPTR;
     }
     // Clear all caches
     accountCache.clear();
@@ -7666,7 +7666,7 @@ QMailStorePrivate::AttemptResult QMailStorePrivate::attemptAccountConfiguration(
         return DatabaseFailure;
 
     QString service;
-    QMailAccountConfiguration::ServiceConfiguration *serviceConfig = 0;
+    QMailAccountConfiguration::ServiceConfiguration *serviceConfig = Q_NULLPTR;
 
     while (query.next()) {
         QString svc(query.value(0).toString());

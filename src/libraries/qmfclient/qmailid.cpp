@@ -33,8 +33,9 @@
 
 #include "qmailid.h"
 
-struct QMailIdPrivate
+class QMailIdPrivate
 {
+public:
     QMailIdPrivate();
     QMailIdPrivate(quint64 value);
     QMailIdPrivate(const QMailIdPrivate& other);

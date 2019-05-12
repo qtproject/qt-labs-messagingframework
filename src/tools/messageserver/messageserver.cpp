@@ -62,7 +62,7 @@ int MessageServer::sigintFd[2];
 
 MessageServer::MessageServer(QObject *parent)
     : QObject(parent),
-      handler(0),
+      handler(Q_NULLPTR),
       client(new MailMessageClient(this)),
       messageCountUpdate("QPE/Messages/MessageCountUpdated"),
       newMessageTotal(0),
@@ -96,15 +96,15 @@ MessageServer::MessageServer(QObject *parent)
     action.sa_flags = 0;
     action.sa_flags |= SA_RESTART;
 
-    if (sigaction(SIGHUP, &action, 0) > 0)
+    if (sigaction(SIGHUP, &action, Q_NULLPTR) > 0)
         qFatal("Couldn't register HUP handler");
 
     action.sa_handler = MessageServer::termSignalHandler;
-    if (sigaction(SIGTERM, &action, 0) > 0)
+    if (sigaction(SIGTERM, &action, Q_NULLPTR) > 0)
         qFatal("Couldn't register TERM handler");
 
     action.sa_handler = MessageServer::intSignalHandler;
-    if (sigaction(SIGINT, &action, 0) > 0)
+    if (sigaction(SIGINT, &action, Q_NULLPTR) > 0)
         qFatal("Couldn't register INT handler");
 
 #endif // defined(Q_OS_UNIX)

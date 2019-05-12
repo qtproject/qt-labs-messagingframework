@@ -109,6 +109,8 @@ QString RowWidget::requestTypeToString(QMailServerRequestType t)
         return tr("Retrieving a list of folders");
     case RetrieveMessageListRequestType:
         return tr("Retrieving a list of message");
+    case RetrieveNewMessagesRequestType:
+        return tr("Retrieving new messages");
     case RetrieveMessagesRequestType:
         return tr("Retrieving messages");
     case RetrieveMessagePartRequestType:
@@ -147,6 +149,8 @@ QString RowWidget::requestTypeToString(QMailServerRequestType t)
         return tr("Listing actions");
     case ProtocolRequestRequestType:
         return tr("Direct protocol request");
+    case MoveFolderRequestType:
+        return tr("Moving a folder");
         // No default, to get warning when requests added
     }
 
@@ -162,8 +166,8 @@ void RowWidget::sendCancel()
 
 
 void RowWidget::progressChanged(uint x, uint y) {
-    _progress->setMaximum(y);
-    _progress->setValue(x);
+    _progress->setMaximum(static_cast<int>(y));
+    _progress->setValue(static_cast<int>(x));
 }
 
 void RowWidget::generateDescription() {

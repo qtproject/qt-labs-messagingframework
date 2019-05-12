@@ -1601,7 +1601,7 @@ void ImapFetchSelectedMessagesStrategy::metaDataAnalysis(ImapStrategyContextBase
             // This is a regular part. Try to download it completely, if it is not the preferred body
             // that is already added to the list.
             if (part.location() != preferredBody) {
-                sectionList.append(qMakePair(part.location(), (uint)disposition.size()));
+                sectionList.append(qMakePair(part.location(), static_cast<uint>(disposition.size())));
             }
         }
     }

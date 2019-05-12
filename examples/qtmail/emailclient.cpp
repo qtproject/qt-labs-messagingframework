@@ -153,10 +153,10 @@ static bool confirmDelete( QWidget *parent, const QString & caption, const QStri
 }
 
 // This is used regularly:
-static const QMailMessage::MessageType nonEmailType = static_cast<QMailMessage::MessageType>(QMailMessage::Mms |
-                                                                                             QMailMessage::Sms |
-                                                                                             QMailMessage::Instant |
-                                                                                             QMailMessage::System);
+// static const QMailMessage::MessageType nonEmailType = static_cast<QMailMessage::MessageType>(QMailMessage::Mms |
+//                                                                                             QMailMessage::Sms |
+//                                                                                             QMailMessage::Instant |
+//                                                                                             QMailMessage::System);
 
 class AcknowledgmentBox : public QMessageBox
 {
@@ -174,7 +174,7 @@ private:
 };
 
 AcknowledgmentBox::AcknowledgmentBox(const QString& title, const QString& text)
-    : QMessageBox(0)
+    : QMessageBox(Q_NULLPTR)
 {
     setWindowTitle(title);
     setText(text);
@@ -467,15 +467,15 @@ EmailClient::EmailClient(QWidget *parent, Qt::WindowFlags f)
       initialAction(None),
       preSearchWidgetId(-1),
 #if defined(SERVER_AS_DLL)
-      m_messageServerThread(0),
+      m_messageServerThread(Q_NULLPTR),
 #else
-      m_messageServerProcess(0),
+      m_messageServerProcess(Q_NULLPTR),
 #endif
-      m_contextMenu(0),
-      m_transmitAction(0),
-      m_retrievalAction(0),
-      m_flagRetrievalAction(0),
-      m_exportAction(0)
+      m_contextMenu(Q_NULLPTR),
+      m_transmitAction(Q_NULLPTR),
+      m_retrievalAction(Q_NULLPTR),
+      m_flagRetrievalAction(Q_NULLPTR),
+      m_exportAction(Q_NULLPTR)
 {
     setObjectName( "EmailClient" );
 
@@ -546,7 +546,7 @@ void EmailClient::resumeInterruptedComposition()
     mailconf.endGroup();
 
     if (lastDraftId.isValid()) {
-        if (QMessageBox::question(0,
+        if (QMessageBox::question(Q_NULLPTR,
                                      tr("Incomplete message"),
                                      tr("Messages was previously interrupted while composing a message.\n"
                                         "Do you want to resume composing the message?"),
@@ -596,7 +596,7 @@ bool EmailClient::waitForMessageServer()
     {
         qMailLog(Messaging) << "Shutting down messageserver child process..";
         bool result = m_messageServerProcess->waitForFinished();
-        delete m_messageServerProcess; m_messageServerProcess = 0;
+        delete m_messageServerProcess; m_messageServerProcess = Q_NULLPTR;
         return result;
     }
 #endif
@@ -1044,22 +1044,22 @@ MessageListView* EmailClient::createMessageListView()
 
 void EmailClient::init()
 {
-    getMailButton = 0;
-    getAccountButton = 0;
-    cancelButton = 0;
-    composeButton = 0;
-    searchButton = 0;
-    synchronizeAction = 0;
-    settingsAction = 0;
-    standardFoldersAction = 0;
-    workOfflineAction = 0;
-    emptyTrashAction = 0;
-    moveAction = 0;
-    copyAction = 0;
-    restoreAction = 0;
-    selectAllAction = 0;
-    deleteMailAction = 0;
-    m_exportAction = 0;
+    getMailButton = Q_NULLPTR;
+    getAccountButton = Q_NULLPTR;
+    cancelButton = Q_NULLPTR;
+    composeButton = Q_NULLPTR;
+    searchButton = Q_NULLPTR;
+    synchronizeAction = Q_NULLPTR;
+    settingsAction = Q_NULLPTR;
+    standardFoldersAction = Q_NULLPTR;
+    workOfflineAction = Q_NULLPTR;
+    emptyTrashAction = Q_NULLPTR;
+    moveAction = Q_NULLPTR;
+    copyAction = Q_NULLPTR;
+    restoreAction = Q_NULLPTR;
+    selectAllAction = Q_NULLPTR;
+    deleteMailAction = Q_NULLPTR;
+    m_exportAction = Q_NULLPTR;
 
     // Connect our service action signals
     m_flagRetrievalAction = new QMailRetrievalAction(this);
@@ -1375,7 +1375,7 @@ void EmailClient::getAllNewMail()
 {
     if (isRetrieving()) {
         QString msg(tr("Cannot synchronize accounts because a synchronize operation is currently in progress"));
-        QMessageBox::warning(0, tr("Synchronize in progress"), msg, tr("OK") );
+        QMessageBox::warning(Q_NULLPTR, tr("Synchronize in progress"), msg, tr("OK") );
         return;
     }
 
@@ -1393,7 +1393,7 @@ void EmailClient::getAccountMail()
 {
     if (isRetrieving()) {
         QString msg(tr("Cannot synchronize account because a synchronize operation is currently in progress"));
-        QMessageBox::warning(0, tr("Synchronize in progress"), msg, tr("OK") );
+        QMessageBox::warning(Q_NULLPTR, tr("Synchronize in progress"), msg, tr("OK") );
         return;
     }
 
@@ -1410,7 +1410,7 @@ void EmailClient::getSingleMail(const QMailMessageMetaData& message)
 {
     if (isRetrieving()) {
         QString msg(tr("Cannot retrieve message because a retrieval operation is currently in progress"));
-        QMessageBox::warning(0, tr("Retrieval in progress"), msg, tr("OK") );
+        QMessageBox::warning(Q_NULLPTR, tr("Retrieval in progress"), msg, tr("OK") );
         return;
     }
 
@@ -1424,7 +1424,7 @@ void EmailClient::retrieveMessagePortion(const QMailMessageMetaData& message, ui
 {
     if (isRetrieving()) {
         QString msg(tr("Cannot retrieve message portion because a retrieval operation is currently in progress"));
-        QMessageBox::warning(0, tr("Retrieval in progress"), msg, tr("OK") );
+        QMessageBox::warning(Q_NULLPTR, tr("Retrieval in progress"), msg, tr("OK") );
         return;
     }
 
@@ -1439,13 +1439,13 @@ void EmailClient::retrieveMessagePart(const QMailMessagePart::Location &partLoca
 {
     if (isRetrieving()) {
         QString msg(tr("Cannot retrieve message part because a retrieval operation is currently in progress"));
-        QMessageBox::warning(0, tr("Retrieval in progress"), msg, tr("OK") );
+        QMessageBox::warning(Q_NULLPTR, tr("Retrieval in progress"), msg, tr("OK") );
         return;
     }
 
     if (!partLocation.isValid(true)) {
         QString msg(tr("Cannot retrieve message part without a valid message ID"));
-        QMessageBox::warning(0, tr("Invalid part location"), msg, tr("OK") );
+        QMessageBox::warning(Q_NULLPTR, tr("Invalid part location"), msg, tr("OK") );
     } else {
         QMailMessageMetaData metaData(partLocation.containingMessageId());
 
@@ -1460,13 +1460,13 @@ void EmailClient::retrieveMessagePartPortion(const QMailMessagePart::Location &p
 {
     if (isRetrieving()) {
         QString msg(tr("Cannot retrieve message part portion because a retrieval operation is currently in progress"));
-        QMessageBox::warning(0, tr("Retrieval in progress"), msg, tr("OK") );
+        QMessageBox::warning(Q_NULLPTR, tr("Retrieval in progress"), msg, tr("OK") );
         return;
     }
 
     if (!partLocation.isValid(true)) {
         QString msg(tr("Cannot retrieve message part without a valid message ID"));
-        QMessageBox::warning(0, tr("Invalid part location"), msg, tr("OK") );
+        QMessageBox::warning(Q_NULLPTR, tr("Invalid part location"), msg, tr("OK") );
     } else {
         QMailMessage messsage(partLocation.containingMessageId());
 
@@ -1549,7 +1549,7 @@ void EmailClient::transferFailure(const QMailAccountId& accountId, const QString
         qMailLog(Messaging) << "transferFailure:" << caption << '-' << action;
         if (code != QMailServiceAction::Status::ErrCancel) {
             clearStatusText();
-            QMessageBox::warning(0, caption, action, QMessageBox::Ok);
+            QMessageBox::warning(Q_NULLPTR, caption, action, QMessageBox::Ok);
         } else {
             emit updateStatus(tr("Transfer cancelled"));
         }
@@ -1575,7 +1575,7 @@ void EmailClient::storageActionFailure(const QMailAccountId& accountId, const QS
     }
 
     clearStatusText();
-    QMessageBox::warning(0, caption, action.arg(text), QMessageBox::Ok);
+    QMessageBox::warning(Q_NULLPTR, caption, action.arg(text), QMessageBox::Ok);
 }
 
 QString EmailClient::mailType(QMailMessage::MessageType type)
@@ -1620,7 +1620,7 @@ void EmailClient::showSearchResult(const QMailMessageId &id)
 void EmailClient::accessError(const QString &folderName)
 {
     QString msg = tr("Cannot access %1. Either there is insufficient space, or another program is accessing the mailbox.").arg(folderName);
-    QMessageBox::critical( 0, tr("Access error"), msg );
+    QMessageBox::critical(Q_NULLPTR, tr("Access error"), msg );
 }
 
 void EmailClient::readSettings()
@@ -2179,13 +2179,13 @@ bool EmailClient::checkMailConflict(const QString& msg1, const QString& msg2)
 {
     if ( writeMailWidget()->isVisible()) {
         QString message = tr("<qt>You are currently editing a message:<br>%1</qt>").arg(msg1);
-        switch( QMessageBox::warning( 0, tr("Messages conflict"), message,
-                                      tr("Yes"), tr("No"), 0, 0, 1 ) ) {
+        switch( QMessageBox::warning(Q_NULLPTR, tr("Messages conflict"), message,
+                                     tr("Yes"), tr("No"), Q_NULLPTR, 0, 1 ) ) {
 
             case 0:
             {
                 if ( !writeMailWidget()->saveChangesOnRequest() ) {
-                    QMessageBox::warning(0,
+                    QMessageBox::warning(Q_NULLPTR,
                                         tr("Autosave failed"),
                                         tr("<qt>Autosave failed:<br>%1</qt>").arg(msg2));
                     return true;
@@ -2272,7 +2272,7 @@ void EmailClient::modify(const QMailMessage& message)
         }
         viewComposer();
     } else {
-        QMessageBox::warning(0,
+        QMessageBox::warning(Q_NULLPTR,
                              tr("Error"),
                              tr("Cannot edit a message of this type."),
                              tr("OK"));
@@ -2294,7 +2294,7 @@ void EmailClient::retrieveMoreMessages()
         // Find how many messages we have requested for this folder
         QMailMessageKey countKey(QMailDisconnected::sourceKey(folderId));
         countKey &= ~QMailSearchAction::temporaryKey();
-        int retrievedMinimum = QMailStore::instance()->countMessages(countKey);
+        uint retrievedMinimum = static_cast<uint>(QMailStore::instance()->countMessages(countKey));
 
         // Request more messages
         retrievedMinimum += QMailRetrievalAction::defaultMinimum();
@@ -2653,7 +2653,7 @@ void EmailClient::runNextPendingExport()
 {
     if (m_queuedExports.isEmpty()) {
         m_exportAction->deleteLater();
-        m_exportAction = 0;
+        m_exportAction = Q_NULLPTR;
         return;
     }
     
@@ -2692,7 +2692,7 @@ void EmailClient::messagesUpdated(const QMailMessageIdList& ids)
             QMailMessageMetaData updatedMessage(readMailWidget()->displayedMessage());
             if (updatedMessage.status() & QMailMessage::Removed) {
                 // This message has been removed
-                QMessageBox::warning(0,
+                QMessageBox::warning(Q_NULLPTR,
                                     tr("Message deleted"),
                                     tr("Message cannot be downloaded, because it has been deleted from the server."),
                                     QMessageBox::Ok);
@@ -2768,7 +2768,7 @@ void EmailClient::noSendAccount(QMailMessage::MessageType type)
     QString key(QMailComposerFactory::defaultKey(type));
     QString name(QMailComposerFactory::name(key, type));
 
-    QMessageBox::warning(0,
+    QMessageBox::warning(Q_NULLPTR,
                          tr("Send Error"),
                          tr("%1 cannot be sent, because no account has been configured to send with.","%1=MMS/Email/TextMessage").arg(name),
                          QMessageBox::Ok);
@@ -2908,10 +2908,10 @@ void EmailClient::nextMessage()
 {
     QWidget *list = messageListView()->findChild<QWidget*>("messagelistview");
     if (list) {
-        QApplication::postEvent(list, new QKeyEvent(QEvent::KeyPress, Qt::Key_Down, 0));
-        QApplication::postEvent(list, new QKeyEvent(QEvent::KeyRelease, Qt::Key_Down, 0));
-        QApplication::postEvent(list, new QKeyEvent(QEvent::KeyPress, Qt::Key_Enter, 0));
-        QApplication::postEvent(list, new QKeyEvent(QEvent::KeyRelease, Qt::Key_Enter, 0));
+        QApplication::postEvent(list, new QKeyEvent(QEvent::KeyPress, Qt::Key_Down, Q_NULLPTR));
+        QApplication::postEvent(list, new QKeyEvent(QEvent::KeyRelease, Qt::Key_Down, Q_NULLPTR));
+        QApplication::postEvent(list, new QKeyEvent(QEvent::KeyPress, Qt::Key_Enter, Q_NULLPTR));
+        QApplication::postEvent(list, new QKeyEvent(QEvent::KeyRelease, Qt::Key_Enter, Q_NULLPTR));
     }
 }
 
@@ -2919,10 +2919,10 @@ void EmailClient::previousMessage()
 {
     QWidget *list = messageListView()->findChild<QWidget*>("messagelistview");
     if (list) {
-        QApplication::postEvent(list, new QKeyEvent(QEvent::KeyPress, Qt::Key_Up, 0));
-        QApplication::postEvent(list, new QKeyEvent(QEvent::KeyRelease, Qt::Key_Up, 0));
-        QApplication::postEvent(list, new QKeyEvent(QEvent::KeyPress, Qt::Key_Enter, 0));
-        QApplication::postEvent(list, new QKeyEvent(QEvent::KeyRelease, Qt::Key_Enter, 0));
+        QApplication::postEvent(list, new QKeyEvent(QEvent::KeyPress, Qt::Key_Up, Q_NULLPTR));
+        QApplication::postEvent(list, new QKeyEvent(QEvent::KeyRelease, Qt::Key_Up, Q_NULLPTR));
+        QApplication::postEvent(list, new QKeyEvent(QEvent::KeyPress, Qt::Key_Enter, Q_NULLPTR));
+        QApplication::postEvent(list, new QKeyEvent(QEvent::KeyRelease, Qt::Key_Enter, Q_NULLPTR));
     }
 }
    
@@ -2930,8 +2930,8 @@ void EmailClient::nextUnreadMessage()
 {
     QWidget *list = messageListView()->findChild<QWidget*>("messagelistview");
     if (list) {
-        QApplication::postEvent(list, new QKeyEvent(QEvent::KeyPress, Qt::Key_Plus, 0, "+"));
-        QApplication::postEvent(list, new QKeyEvent(QEvent::KeyRelease, Qt::Key_Plus, 0, "+"));
+        QApplication::postEvent(list, new QKeyEvent(QEvent::KeyPress, Qt::Key_Plus, Q_NULLPTR, "+"));
+        QApplication::postEvent(list, new QKeyEvent(QEvent::KeyRelease, Qt::Key_Plus, Q_NULLPTR, "+"));
     }
 }
 
@@ -2939,10 +2939,10 @@ void EmailClient::previousUnreadMessage()
 {
     QWidget *list = messageListView()->findChild<QWidget*>("messagelistview");
     if (list) {
-        QApplication::postEvent(list, new QKeyEvent(QEvent::KeyPress, Qt::Key_Minus, 0, "-"));
-        QApplication::postEvent(list, new QKeyEvent(QEvent::KeyRelease, Qt::Key_Minus, 0, "-"));
-        QApplication::postEvent(list, new QKeyEvent(QEvent::KeyPress, Qt::Key_Enter, 0));
-        QApplication::postEvent(list, new QKeyEvent(QEvent::KeyRelease, Qt::Key_Enter, 0));
+        QApplication::postEvent(list, new QKeyEvent(QEvent::KeyPress, Qt::Key_Minus, Q_NULLPTR, "-"));
+        QApplication::postEvent(list, new QKeyEvent(QEvent::KeyRelease, Qt::Key_Minus, Q_NULLPTR, "-"));
+        QApplication::postEvent(list, new QKeyEvent(QEvent::KeyPress, Qt::Key_Enter, Q_NULLPTR));
+        QApplication::postEvent(list, new QKeyEvent(QEvent::KeyRelease, Qt::Key_Enter, Q_NULLPTR));
     }
 }
 
@@ -2951,8 +2951,8 @@ void EmailClient::scrollReaderDown()
     QWidget *renderer = readMailWidget()->findChild<QWidget*>("renderer");
 
     if (renderer) {
-        QApplication::postEvent(renderer, new QKeyEvent(QEvent::KeyPress, Qt::Key_Down, 0));
-        QApplication::postEvent(renderer, new QKeyEvent(QEvent::KeyRelease, Qt::Key_Down, 0));
+        QApplication::postEvent(renderer, new QKeyEvent(QEvent::KeyPress, Qt::Key_Down, Q_NULLPTR));
+        QApplication::postEvent(renderer, new QKeyEvent(QEvent::KeyRelease, Qt::Key_Down, Q_NULLPTR));
     }
 }
 
@@ -2960,8 +2960,8 @@ void EmailClient::scrollReaderUp()
 {
     QWidget *renderer = readMailWidget()->findChild<QWidget*>("renderer");
     if (renderer) {
-        QApplication::postEvent(renderer, new QKeyEvent(QEvent::KeyPress, Qt::Key_Up, 0));
-        QApplication::postEvent(renderer, new QKeyEvent(QEvent::KeyRelease, Qt::Key_Up, 0));
+        QApplication::postEvent(renderer, new QKeyEvent(QEvent::KeyPress, Qt::Key_Up, Q_NULLPTR));
+        QApplication::postEvent(renderer, new QKeyEvent(QEvent::KeyRelease, Qt::Key_Up, Q_NULLPTR));
     }
 }
 

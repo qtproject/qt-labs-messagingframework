@@ -58,7 +58,7 @@ static PluginMap initMap(QMailPluginManager& manager)
 */
 static PluginMap& pluginMap()
 {
-    static QMailPluginManager pluginManager(PLUGIN_KEY);
+    static QMailPluginManager pluginManager(QStringLiteral(PLUGIN_KEY));
     static PluginMap map(initMap(pluginManager));
 
     return map;
@@ -74,7 +74,7 @@ static QMailMessageServerPlugin* mapping(const QString& key)
         return it.value();
 
     qWarning() << "Failed attempt to map plugin: " << key;
-    return 0;
+    return Q_NULLPTR;
 }
 
 /*!
@@ -158,5 +158,5 @@ QMailMessageServerPlugin* QMailMessageServerPluginFactory::createService(const Q
     if (QMailMessageServerPlugin* plugin = mapping(key))
         return plugin->createService();
 
-    return 0;
+    return Q_NULLPTR;
 }

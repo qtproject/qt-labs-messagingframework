@@ -269,7 +269,7 @@ QVariant QMailMessageModelBase::data(const QMailMessageMetaData &message, int ro
             return message.subject();
 
         case MessageFilterTextRole:
-            return QString(messageAddressText(message,incoming) + ' ' + message.subject());
+            return QString(messageAddressText(message,incoming) % QStringLiteral(" ") % message.subject());
 
         case Qt::DecorationRole:
         case MessageTypeIconRole:

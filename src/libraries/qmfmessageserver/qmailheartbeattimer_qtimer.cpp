@@ -34,8 +34,9 @@
 #include "qmailheartbeattimer.h"
 #include <QPair>
 
-struct QMailHeartbeatTimerPrivate
+class QMailHeartbeatTimerPrivate
 {
+public:
     QMailHeartbeatTimerPrivate()
         : timer(new QTimer), interval(0, 0)
     {}

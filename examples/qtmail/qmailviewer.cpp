@@ -332,7 +332,7 @@ QString QMailViewerFactory::defaultKey(QMailMessage::ContentType type, Presentat
 */
 QMailViewerInterface *QMailViewerFactory::create(const QString &key, QWidget *parent)
 {
-    Q_UNUSED(parent);
+    Q_UNUSED(key);
     return new GenericViewer(parent);
 }
 

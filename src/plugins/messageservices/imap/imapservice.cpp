@@ -1019,7 +1019,6 @@ bool ImapService::Source::createStandardFolders(const QMailAccountId &accountId)
                 break;
             default:
                 return false;
-                break;
             }
         }
     }
@@ -1445,7 +1444,7 @@ QMap<QMailAccountId, int> ImapService::_initiatePushDelay = QMap<QMailAccountId,
 ImapService::ImapService(const QMailAccountId &accountId)
     : QMailMessageService(),
       _accountId(accountId),
-      _client(0),
+      _client(Q_NULLPTR),
       _source(new Source(this)),
       _restartPushEmailTimer(new QTimer(this)),
       _establishingPushEmail(false),
@@ -1534,7 +1533,7 @@ void ImapService::disable()
         releasePushConnections(_client->pushConnectionsReserved());
     }
     delete _client;
-    _client = 0;
+    _client = Q_NULLPTR;
 }
 
 void ImapService::accountsUpdated(const QMailAccountIdList &ids)
@@ -1942,7 +1941,7 @@ QMailMessageServiceEditor *ImapConfigurator::createEditor(QMailMessageServiceFac
     if (type == QMailMessageServiceFactory::Source)
         return new ImapSettings;
 
-    return 0;
+    return Q_NULLPTR;
 }
 #endif
 

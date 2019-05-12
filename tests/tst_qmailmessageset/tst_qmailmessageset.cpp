@@ -148,7 +148,7 @@ void tst_QMailMessageSet::initTestCase()
         account.setFromAddress(QMailAddress("Account 3", "account3@test"));
         account.setCustomField("verified", "false");
 
-        QVERIFY(QMailStore::instance()->addAccount(&account, 0));
+        QVERIFY(QMailStore::instance()->addAccount(&account, Q_NULLPTR));
         accountId3 = account.id();
         allAccounts << account.id();
         unverifiedAccounts << account.id();
@@ -161,7 +161,7 @@ void tst_QMailMessageSet::initTestCase()
         account.setFromAddress(QMailAddress("Account 4", "account4@test"));
         account.setCustomField("verified", "false");
 
-        QVERIFY(QMailStore::instance()->addAccount(&account, 0));
+        QVERIFY(QMailStore::instance()->addAccount(&account, Q_NULLPTR));
         accountId4 = account.id();
         allAccounts << account.id();
         unverifiedAccounts << account.id();

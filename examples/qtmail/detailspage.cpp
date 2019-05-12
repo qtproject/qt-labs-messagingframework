@@ -52,8 +52,8 @@
 
 static const QString placeholder("(no subject)");
 
-static const int MaximumSmsSubjectLength = 40;
-static const int MaximumInstantSubjectLength = 256;
+// static const int MaximumSmsSubjectLength = 40;
+// static const int MaximumInstantSubjectLength = 256;
 
 class FromAddressComboBox : public QComboBox
 {
@@ -216,7 +216,7 @@ DetailsPage::DetailsPage( QWidget *parent, const char *name )
     tabOrderList.append( m_fromField );
 
     QListIterator<QWidget*> it( tabOrderList );
-    QWidget *prev = 0;
+    QWidget *prev = Q_NULLPTR;
     QWidget *next;
     while ( it.hasNext() ) {
         next = it.next();

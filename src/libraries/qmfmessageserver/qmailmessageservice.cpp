@@ -76,7 +76,7 @@ QMailMessageServicePlugin *mapping(const QString &key)
         return it.value();
 
     qMailLog(Messaging) << "Unable to map service for key:" << key;
-    return 0;
+    return Q_NULLPTR;
 }
 
 }
@@ -157,7 +157,7 @@ QMailMessageService *QMailMessageServiceFactory::createService(const QString &ke
     if (QMailMessageServicePlugin* plugin = mapping(key))
         return plugin->createService(accountId);
 
-    return 0;
+    return Q_NULLPTR;
 }
 
 /*!
@@ -168,7 +168,7 @@ QMailMessageServiceConfigurator *QMailMessageServiceFactory::createServiceConfig
     if (QMailMessageServicePlugin* plugin = mapping(key))
         return plugin->createServiceConfigurator();
 
-    return 0;
+    return Q_NULLPTR;
 }
 
 
@@ -213,7 +213,7 @@ QMailMessageServiceConfigurator *QMailMessageServiceFactory::createServiceConfig
 */
 QMailMessageServiceConfigurator *QMailMessageServicePluginInterface::createServiceConfigurator()
 {
-    return 0;
+    return Q_NULLPTR;
 }
 
 
@@ -345,7 +345,7 @@ void decorate(QString* message, int code, const ErrorSet& errorSet)
     if (code == QMailServiceAction::Status::ErrFileSystemFull) {
         message->append(' ').append(LongStream::errorMessage());
     } else if (code == QMailServiceAction::Status::ErrEnqueueFailed) {
-        message->append('\n' + qApp->translate("QMailServiceAction", "Unable to send; message moved to Drafts folder"));
+        message->append('\n').append(qApp->translate("QMailServiceAction", "Unable to send; message moved to Drafts folder"));
     } else if (code == QMailServiceAction::Status::ErrUnknownResponse) {
         message->prepend(qApp->translate("QMailServiceAction", "Unexpected response from server: "));
     } else {
@@ -355,7 +355,7 @@ void decorate(QString* message, int code, const ErrorSet& errorSet)
     if (!handledByErrorSet && !handledByHandler) {
         if (!message->isEmpty())
             message->append('\n');
-        message->append('<' + QString(qApp->translate("QMailServiceAction", "Error %1", "%1 contains numeric error code")).arg(code) + '>');
+        message->append('<').append(QString(qApp->translate("QMailServiceAction", "Error %1", "%1 contains numeric error code")).arg(code)).append('>');
     }
 }
 
@@ -1098,7 +1098,7 @@ void QMailMessageSource::notImplemented()
 /*! \internal */
 void QMailMessageSource::deleteMessages()
 {
-    uint total = d->_ids.count();
+    uint total = static_cast<uint>(d->_ids.count());
     emit d->_service->progressChanged(0, total);
 
     // Just remove these locally and store a deletion record for later synchronization
@@ -1122,7 +1122,7 @@ void QMailMessageSource::copyMessages()
 {
     bool successful(true);
 
-    unsigned int size = QMailStore::instance()->sizeOfMessages(QMailMessageKey::id(d->_ids));
+    int size = QMailStore::instance()->sizeOfMessages(QMailMessageKey::id(d->_ids));
     if (!LongStream::freeSpace(QString(), size + 1024*10)) {
         qMailLog(Messaging) << "Insufficient space to copy messages to folder:" << d->_destinationId << "bytes required:" << size;
         emit d->_service->statusChanged(QMailServiceAction::Status(QMailServiceAction::Status::ErrFileSystemFull, tr("Insufficient space to copy messages to folder"), QMailAccountId(), d->_destinationId, QMailMessageId()));
@@ -1131,7 +1131,7 @@ void QMailMessageSource::copyMessages()
 
     if (successful) {
         uint progress = 0;
-        uint total = d->_ids.count();
+        uint total = static_cast<uint>(d->_ids.count());
         emit d->_service->progressChanged(progress, total);
 
         // Create a copy of each message
@@ -1164,7 +1164,7 @@ void QMailMessageSource::copyMessages()
 /*! \internal */
 void QMailMessageSource::moveMessages()
 {
-    uint total = d->_ids.count();
+    uint total = static_cast<uint>(d->_ids.count());
     emit d->_service->progressChanged(0, total);
 
     QMailMessageMetaData metaData;
@@ -1188,7 +1188,7 @@ void QMailMessageSource::moveMessages()
 /*! \internal */
 void QMailMessageSource::flagMessages()
 {
-    uint total = d->_ids.count();
+    uint total = static_cast<uint>(d->_ids.count());
     emit d->_service->progressChanged(0, total);
 
     if (modifyMessageFlags(d->_ids, d->_setMask, d->_unsetMask)) {
@@ -1372,7 +1372,7 @@ bool QMailMessageService::hasSource() const
 QMailMessageSource &QMailMessageService::source() const
 {
     Q_ASSERT(0);
-    return *(reinterpret_cast<QMailMessageSource*>(0));
+    qFatal("QMailMessageSource is not implemented");
 }
 
 /*!
@@ -1391,7 +1391,7 @@ bool QMailMessageService::hasSink() const
 QMailMessageSink &QMailMessageService::sink() const
 {
     Q_ASSERT(0);
-    return *(reinterpret_cast<QMailMessageSink*>(0));
+    qFatal("QMailMessageSink is not implemented");
 }
 
 /*!

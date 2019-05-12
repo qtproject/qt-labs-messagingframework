@@ -152,16 +152,16 @@ QString QMail::dataPath()
     // encoding as best guess, likely just ascii
     static QString dataEnv(QString::fromUtf8(qgetenv(QMF_DATA_ENV)));
     if(!dataEnv.isEmpty())
-        return dataEnv + '/';
+        return dataEnv + QStringLiteral("/");
     //default to ~/.qmf if not env set
-    return QDir::homePath() + "/.qmf/";
+    return QDir::homePath() + QStringLiteral("/.qmf/");
 }
 /*!
     Returns the the time when the Messaging framework store file was las updated.
 */
 QDateTime QMail::lastDbUpdated()
 {
-    static QString database_path(dataPath() + "database");
+    static QString database_path(dataPath() + QStringLiteral("database"));
     QDir dir(database_path);
 
     if (!dir.exists()) {
@@ -192,7 +192,7 @@ QDateTime QMail::lastDbUpdated()
 */
 QString QMail::tempPath()
 {
-    return (dataPath() + "tmp/");
+    return (dataPath() + QStringLiteral("tmp/"));
 }
 
 /*!
@@ -202,9 +202,9 @@ QString QMail::messageServerPath()
 {
     static QString serverEnv(QString::fromUtf8(qgetenv(QMF_SERVER_ENV)));
     if(!serverEnv.isEmpty())
-        return serverEnv + '/';
+        return serverEnv + QStringLiteral("/");
 
-    return QCoreApplication::applicationDirPath() + '/';
+    return QCoreApplication::applicationDirPath() + QStringLiteral("/");
 }
 
 /*!
@@ -214,8 +214,8 @@ QString QMail::messageSettingsPath()
 {
     static QString settingsEnv(QString::fromUtf8(qgetenv(QMF_SETTINGS_ENV)));
     if(!settingsEnv.isEmpty())
-        return settingsEnv + '/';
-    return QCoreApplication::applicationDirPath() + '/';
+        return settingsEnv + QStringLiteral("/");
+    return QCoreApplication::applicationDirPath() + QStringLiteral("/");
 }
 
 /*!
@@ -253,7 +253,7 @@ public:
 
     QString dbConnectionName()
     {
-        return QString::asprintf("qmailstore_sql_connection_%p", this);
+        return QString::asprintf("qmailstore_sql_connection_%p", static_cast<void*>(this));
     }
 
     bool init;
@@ -286,7 +286,7 @@ QSqlDatabase QMail::createDatabase()
         qMailLog(Messaging) << "opening database";
         db = QSqlDatabase::addDatabase(QLatin1String("QSQLITE"), instance->dbConnectionName());
         
-        QDir dbDir(dataPath() + "database");
+        QDir dbDir(dataPath() + QStringLiteral("database"));
         if (!dbDir.exists()) {
 #ifdef Q_OS_UNIX
             QString path = dataPath();
@@ -295,11 +295,11 @@ QSqlDatabase QMail::createDatabase()
             if (!QDir(path).exists() && ::mkdir(QFile::encodeName(path), S_IRWXU) == -1)
                 qCritical() << "Cannot create database directory: " << errno;
 #endif
-            if (!dbDir.mkpath(dataPath() + "database"))
+            if (!dbDir.mkpath(dataPath() + QStringLiteral("database")))
                 qCritical() << "Cannot create database path";
         }
 
-        db.setDatabaseName(dataPath() + "database/qmailstore.db");
+        db.setDatabaseName(dataPath() + QStringLiteral("database/qmailstore.db"));
 #endif
 
         if(!db.open()) {
